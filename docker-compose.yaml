@@ -1,0 +1,7 @@
+services:
+  app:
+    build: .
+    container_name: gaps-scraper
+    command: python3 main.py
+    volumes:
+      - .:/src
