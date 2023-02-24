@@ -29,9 +29,10 @@ EFFECTIFS_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"effectifs.p")
 
 
 def log(log_txt: str) -> None:
-    with open("logs", "a+") as f:
-        now = datetime.now()
-        f.write("\n" + now.strftime("%d/%m/%Y %H:%M") + ": " + log_txt)
+    """with open("logs", "w") as f:
+    now = datetime.now()
+    f.write("\n" + now.strftime("%d/%m/%Y %H:%M") + ": " + log_txt)
+    """
     print(log_txt)
 
 
@@ -102,7 +103,13 @@ def get_grades(full_array_str: str, module_headers: set) -> Union[dict, dict]:
 
         if is_grade:
             grade_name = lines[i - 1]
-            results[module + " " + grade_name] = line.split(" ")[-1]
+            splitted = line.split(" ")
+            try:
+                float(splitted[-1])
+                results[module + " " + grade_name] = f"{splitted[-1]} ({splitted[0]})"
+            except ValueError:
+                pass
+
         if is_header:
             line_split = line.split(" ")
             module = line_split[0]
@@ -183,11 +190,8 @@ def get_report_card(driver: webdriver.Chrome) -> Union[list, list]:
 def create_message_text(grades: set, averages: dict) -> str:
     notification_text = "Nouvelle(s) note(s) reçue(s):\n"
     for grade in sorted(grades):
-        try:
-            float(grade[1])
-            notification_text += f"{grade[0]}: {grade[1]}\n"
-        except ValueError:
-            pass
+        notification_text += f"{grade[0]}: {grade[1]}\n"
+
     notification_text += "\nMoyennes:\n"
 
     for key, val in averages.items():
@@ -363,7 +367,11 @@ def handle_nb_effectifs(driver: webdriver.Chrome) -> bool:
 
     dif_set = set(old_effectifs.items()) ^ set(effectifs.items())
     texte = ""
-    for ele in dif_set:
+    for ele in sorted(dif_set):
+        if ele in set(old_effectifs.items()):
+            texte += "[OLD]: "
+        else:
+            texte += "[NEW]: "
         texte += f"{ele[0]}: {ele[1]}\n"
 
     if dif_set:
@@ -385,7 +393,6 @@ def main():
     }
     try:
         for name, func in name_func_dict.items():
-
             driver = create_driver()
             if not func(driver):
                 log(f"Couldn't get {name}")
