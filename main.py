@@ -8,19 +8,20 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import TimeoutException
 import pickle
+import json
 import os
 import smtplib, ssl
 from email.message import EmailMessage
-from typing import Union
+from typing import Tuple, Union
 from datetime import datetime
 
+AUTH_PATH = "auth.json"
 BASE_URL = r"https://gaps.heig-vd.ch/consultation/"
 GRADES_URL = BASE_URL + r"controlescontinus/consultation.php"
 REPORT_CARD_BASE_URL = BASE_URL + r"notes/bulletin.php?id="
 STUDENT_DETAILS_URL = BASE_URL + r"etudiant"
 SCHEDULE_URL = BASE_URL + r"horaires"
-USERNAME = "andremig.serzedel"
-PASSWORD = "SalamiPicant3?"
+
 
 GRADES_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"grades.p")
 MODULES_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"modules.p")
@@ -35,6 +36,10 @@ def log(log_txt: str) -> None:
     """
     print(log_txt)
 
+def get_login_data() -> Tuple[str,str]:
+    
+    auth = json.load(open("auth.json"))
+    return auth["username"], auth["password"]
 
 def get_element(driver: webdriver.Chrome, by: By, element_name: str) -> WebElement:
     try:
@@ -207,10 +212,10 @@ def terminal_notification(text: str) -> None:
 def email_notification(subject: str, message_content: str) -> None:
 
     message = EmailMessage()
-
+    username, _ = get_login_data()
     message["Subject"] = subject
     message["From"] = "no.reply.gaps.notifier@gmail.com"
-    message["To"] = USERNAME + "@heig-vd.ch"
+    message["To"] = username + "@heig-vd.ch"
     message.set_content(message_content)
 
     context = ssl.create_default_context()
@@ -287,8 +292,9 @@ def handle_grades(driver: webdriver.Chrome) -> bool:
         old_grades = {}
 
     open_url(driver, GRADES_URL)
+    username, password = get_login_data()
 
-    if not login(driver, USERNAME, PASSWORD):
+    if not login(driver, username, password):
         return False
 
     array, headers = get_grades_array(driver)
@@ -315,7 +321,9 @@ def handle_report_card(driver: webdriver.Chrome) -> bool:
         old_units = []
     open_url(driver, STUDENT_DETAILS_URL)
 
-    if not login(driver, USERNAME, PASSWORD):
+    username, password = get_login_data()
+    
+    if not login(driver, username, password):
         return False
 
     if not go_to_report_card(driver):
@@ -342,9 +350,12 @@ def handle_nb_effectifs(driver: webdriver.Chrome) -> bool:
     effectifs = {}
 
     open_url(driver, SCHEDULE_URL)
-    if not login(driver, USERNAME, PASSWORD):
-        return False
 
+    username, password = get_login_data()
+    
+    if not login(driver, username, password):
+        return False
+    
     main_schedule = get_element(driver, By.ID, "mainSchedule")
     if not main_schedule:
         return False
@@ -388,8 +399,8 @@ def main():
 
     name_func_dict = {
         "grades": handle_grades,
-        "report card": handle_report_card,
-        "nb d'effectifs": handle_nb_effectifs,
+        #"report card": handle_report_card,
+        #"nb d'effectifs": handle_nb_effectifs,
     }
     try:
         for name, func in name_func_dict.items():
