@@ -5,3 +5,4 @@ services:
     command: python3 main.py
     volumes:
       - .:/src
+      - ./auth.json:/src/auth.json
