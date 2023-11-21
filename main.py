@@ -15,7 +15,7 @@ from email.message import EmailMessage
 from typing import Tuple, Union
 from datetime import datetime
 
-AUTH_PATH = "auth.json"
+AUTH_PATH = os.path.join(os.path.dirname(__file__), r"auth.json")
 BASE_URL = r"https://gaps.heig-vd.ch/consultation/"
 GRADES_URL = BASE_URL + r"controlescontinus/consultation.php"
 REPORT_CARD_BASE_URL = BASE_URL + r"notes/bulletin.php?id="
@@ -38,7 +38,7 @@ def log(log_txt: str) -> None:
 
 def get_login_data() -> Tuple[str,str]:
     
-    auth = json.load(open("auth.json"))
+    auth = json.load(open(AUTH_PATH))
     return auth["username"], auth["password"]
 
 def get_element(driver: webdriver.Chrome, by: By, element_name: str) -> WebElement:
