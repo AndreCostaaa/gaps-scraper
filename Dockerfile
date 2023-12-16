@@ -17,8 +17,8 @@ RUN pip install --upgrade pip
 RUN pip install selenium==4.4.3
 
 # copy files
-COPY . /src
-WORKDIR /src
+COPY . /app
+WORKDIR /app
 
 # dumb-init
 RUN apk add dumb-init
@@ -27,5 +27,5 @@ RUN apk add dumb-init
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 #cron
-RUN echo '*/5  *  *  *  * python3 /src/main.py' >> /var/spool/cron/crontabs/root
+RUN echo '*/5  *  *  *  * python3 /app/main.py' >> /var/spool/cron/crontabs/root
 CMD ["crond", "-f"]
