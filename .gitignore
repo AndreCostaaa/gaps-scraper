@@ -1,4 +1,4 @@
 *.p
 /env
-auth.json
+*auth.json
 *pycache*

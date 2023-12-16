@@ -13,9 +13,10 @@ import os
 import smtplib, ssl
 from email.message import EmailMessage
 from typing import Tuple, Union
-from datetime import datetime
 
 AUTH_PATH = os.path.join(os.path.dirname(__file__), r"data/auth.json")
+SMTP_AUTH_PATH = os.path.join(os.path.dirname(__file__), r"data/smtp_auth.json")
+
 BASE_URL = r"https://gaps.heig-vd.ch/consultation/"
 GRADES_URL = BASE_URL + r"controlescontinus/consultation.php"
 REPORT_CARD_BASE_URL = BASE_URL + r"notes/bulletin.php?id="
@@ -224,16 +225,22 @@ def terminal_notification(text: str) -> None:
 
 
 def email_notification(subject: str, message_content: str) -> None:
+    smtp_auth_data = json.load(open(SMTP_AUTH_PATH))
+
     message = EmailMessage()
     username, _ = get_login_data()
     message["Subject"] = subject
-    message["From"] = "no.reply.gaps.notifier@gmail.com"
+    message["From"] = smtp_auth_data["email_address"]
     message["To"] = username + "@heig-vd.ch"
     message.set_content(message_content)
 
     context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login("no.reply.gaps.notifier@gmail.com", "sageutzciwieohhq")
+    with smtplib.SMTP_SSL(
+        smtp_auth_data["smtp_server"],
+        smtp_auth_data["smtp_server_port"],
+        context=context,
+    ) as server:
+        server.login(smtp_auth_data["email_address"], smtp_auth_data["email_token"])
         server.send_message(message)
 
 
@@ -355,7 +362,7 @@ def handle_report_card(driver: webdriver.Chrome) -> bool:
     return True
 
 
-def handle_nb_effectifs(driver: webdriver.Chrome) -> bool:
+def fetch_nb_effectifs(driver: webdriver.Chrome) -> bool:
     try:
         old_effectifs = pickle.load(open(EFFECTIFS_SAVE_PATH, "rb"))
     except:
@@ -450,7 +457,7 @@ def main():
     name_func_dict = {
         "grades": fetch_grades,
         # "report card": handle_report_card,
-        # "nb d'effectifs": handle_nb_effectifs,
+        "nb d'effectifs": fetch_nb_effectifs,
         "new horaire": fetch_new_schedule,
     }
     try:
