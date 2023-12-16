@@ -1,6 +1,6 @@
 # Gaps Scraper
 
-This is a python webscraping project that scrapes Gaps @ HEIG-VD.
+This is a python (selenium) webscraping project that scrapes Gaps @ HEIG-VD.
 
 It currently fetches grades and schedule changes. It uses e-mail notifications to notify the user.
 
