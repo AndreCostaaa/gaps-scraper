@@ -15,7 +15,7 @@ from email.message import EmailMessage
 from typing import Tuple, Union
 from datetime import datetime
 
-AUTH_PATH = os.path.join(os.path.dirname(__file__), r"auth.json")
+AUTH_PATH = os.path.join(os.path.dirname(__file__), r"data/auth.json")
 BASE_URL = r"https://gaps.heig-vd.ch/consultation/"
 GRADES_URL = BASE_URL + r"controlescontinus/consultation.php"
 REPORT_CARD_BASE_URL = BASE_URL + r"notes/bulletin.php?id="
@@ -23,10 +23,13 @@ STUDENT_DETAILS_URL = BASE_URL + r"etudiant"
 SCHEDULE_URL = BASE_URL + r"horaires"
 
 
-GRADES_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"grades.p")
-MODULES_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"modules.p")
-UNITS_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"units.p")
-EFFECTIFS_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"effectifs.p")
+GRADES_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"data/grades.p")
+MODULES_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"data/modules.p")
+UNITS_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"data/units.p")
+EFFECTIFS_SAVE_PATH = os.path.join(os.path.dirname(__file__), r"data/effectifs.p")
+NEXT_SCHEDULE_DATA_PATH = os.path.join(
+    os.path.dirname(__file__), r"data/next_schedule.p"
+)
 
 
 def log(log_txt: str) -> None:
@@ -36,14 +39,17 @@ def log(log_txt: str) -> None:
     """
     print(log_txt)
 
-def get_login_data() -> Tuple[str,str]:
-    
+
+def get_login_data() -> Tuple[str, str]:
     auth = json.load(open(AUTH_PATH))
     return auth["username"], auth["password"]
 
-def get_element(driver: webdriver.Chrome, by: By, element_name: str) -> WebElement:
+
+def get_element(
+    driver: webdriver.Chrome, by: By, element_name: str, wait_time=10
+) -> WebElement:
     try:
-        element = WebDriverWait(driver, 10).until(
+        element = WebDriverWait(driver, wait_time).until(
             EC.presence_of_element_located((by, element_name))
         )
         return element
@@ -62,12 +68,19 @@ def create_driver() -> webdriver.Chrome:
     driver_path = "/usr/bin/chromedriver"
     service = Service(driver_path)
     driver = webdriver.Chrome(options=options, service=service)
-
     return driver
 
 
 def open_url(driver: webdriver.Chrome, url: str) -> None:
     driver.get(url)
+
+
+def skip_popup(driver):
+    pop_up = get_element(driver, By.ID, "dialog-message", wait_time=2)
+
+    if not pop_up:
+        return
+    pop_up.parent.find_element(By.TAG_NAME, "button").click()
 
 
 def login(driver: webdriver.Chrome, username: str, password: str) -> bool:
@@ -80,6 +93,8 @@ def login(driver: webdriver.Chrome, username: str, password: str) -> bool:
     login_input.send_keys(username)
     password_input.send_keys(password)
     password_input.send_keys(Keys.RETURN)
+
+    skip_popup(driver)
     return True
 
 
@@ -97,7 +112,6 @@ def get_grades_array(driver: webdriver.Chrome) -> Union[str, set]:
 
 
 def get_grades(full_array_str: str, module_headers: set) -> Union[dict, dict]:
-
     lines = full_array_str.split("\n")
     results = {}
     averages = {}
@@ -210,7 +224,6 @@ def terminal_notification(text: str) -> None:
 
 
 def email_notification(subject: str, message_content: str) -> None:
-
     message = EmailMessage()
     username, _ = get_login_data()
     message["Subject"] = subject
@@ -285,7 +298,7 @@ def get_differences(old_set: set, new_set: set) -> set:
     return {x for x in dif_set if x not in old_set}
 
 
-def handle_grades(driver: webdriver.Chrome) -> bool:
+def fetch_grades(driver: webdriver.Chrome) -> bool:
     try:
         old_grades = pickle.load(open(GRADES_SAVE_PATH, "rb"))
     except:
@@ -322,7 +335,7 @@ def handle_report_card(driver: webdriver.Chrome) -> bool:
     open_url(driver, STUDENT_DETAILS_URL)
 
     username, password = get_login_data()
-    
+
     if not login(driver, username, password):
         return False
 
@@ -352,10 +365,10 @@ def handle_nb_effectifs(driver: webdriver.Chrome) -> bool:
     open_url(driver, SCHEDULE_URL)
 
     username, password = get_login_data()
-    
+
     if not login(driver, username, password):
         return False
-    
+
     main_schedule = get_element(driver, By.ID, "mainSchedule")
     if not main_schedule:
         return False
@@ -377,30 +390,68 @@ def handle_nb_effectifs(driver: webdriver.Chrome) -> bool:
             effectifs[module_name] = students
 
     dif_set = set(old_effectifs.items()) ^ set(effectifs.items())
-    texte = ""
+    text = ""
     for ele in sorted(dif_set):
         if ele in set(old_effectifs.items()):
-            texte += "[OLD]: "
+            text += "[OLD]: "
         else:
-            texte += "[NEW]: "
-        texte += f"{ele[0]}: {ele[1]}\n"
+            text += "[NEW]: "
+        text += f"{ele[0]}: {ele[1]}\n"
 
     if dif_set:
-        email_notification(
-            "Modification du nombre d'effectifs dans les horaires", texte
-        )
+        email_notification("Modification du nombre d'effectifs dans les horaires", text)
     write_to_disk(effectifs, EFFECTIFS_SAVE_PATH)
     return True
 
 
-def main():
+def fetch_new_schedule(driver: webdriver.Chrome) -> bool:
+    try:
+        next_schedule = pickle.load(open(NEXT_SCHEDULE_DATA_PATH, "rb"))
+    except:
+        next_schedule = ""
 
+    open_url(
+        driver,
+        SCHEDULE_URL,
+    )
+
+    username, password = get_login_data()
+
+    if not login(driver, username, password):
+        return False
+
+    schedule_div = get_element(driver, By.ID, "scheduleDiv")
+
+    schedule_links = schedule_div.find_element(By.CLASS_NAME, "scheduleLinks")
+    schedule_nav_bar = schedule_links.find_elements(By.TAG_NAME, "span")
+    if len(schedule_nav_bar) < 3:
+        return False
+    schedule_nav_bar[2].click()
+    driver.implicitly_wait(1)
+
+    schedule_div = get_element(driver, By.ID, "scheduleDiv")
+
+    schedule_html = schedule_div.get_attribute("innerHTML")
+
+    if next_schedule != schedule_html and not "Aucun horaire" in schedule_html:
+        email_notification(
+            "Nouvel Horaire detecté",
+            "",
+        )
+
+    write_to_disk(schedule_html, NEXT_SCHEDULE_DATA_PATH)
+    return True
+
+
+def main():
     log("Checking for new grades")
 
+    driver = None
     name_func_dict = {
-        "grades": handle_grades,
-        #"report card": handle_report_card,
-        #"nb d'effectifs": handle_nb_effectifs,
+        "grades": fetch_grades,
+        # "report card": handle_report_card,
+        # "nb d'effectifs": handle_nb_effectifs,
+        "new horaire": fetch_new_schedule,
     }
     try:
         for name, func in name_func_dict.items():
@@ -413,7 +464,8 @@ def main():
     except Exception as e:
         log(str(e))
     finally:
-        driver.quit()
+        if driver:
+            driver.quit()
     log("Finished running")
 
 
