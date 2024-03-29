@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GAPS</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+  <LINK rel="stylesheet" href="/consultation/styles.css" type="text/css"/>
+  <meta http-equiv="no-cache" />
+  <meta http-equiv="expires" content="Wed, 26 Feb 1997 08:21:57 GMT"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <script type="text/javascript" src="/consultation/include/jscripts/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript">
+    var wayf_URL = "https://wayf.switch.ch/SWITCHaai/WAYF";
+    var wayf_sp_entityID = "https://gaps.heig-vd.ch/shibboleth";
+    var wayf_sp_handlerURL = "https://gaps.heig-vd.ch/Shibboleth.sso";
+    var wayf_return_url = "https://gaps.heig-vd.ch/consultation/";
+    var wayf_sp_samlDSURL = "https://gaps.heig-vd.ch/Shibboleth.sso/Login";
+    var wayf_width = 450;
+    var wayf_show_remember_checkbox = false;
+    var wayf_hide_logo = false;
+    var wayf_use_small_logo = true;
+    var wayf_auto_login = true;
+    var wayf_show_categories =  false;
+    var wayf_most_used_idps =  new Array("https://aai-logon.hes-so.ch/idp/shibboleth");
+    var wayf_hide_categories =  new Array("all");
+    var wayf_unhide_idps = new Array("https://aai-logon.hes-so.ch/idp/shibboleth");
+    var wayf_hide_idps = new Array();
+    var wayf_num_last_used_idps = 0;
+    
+  </script>
+<script type="text/javascript">
+      function loginformSetFocus()
+      {
+        var f = null;
+        if (document.getElementById) 
+        { 
+          f = document.getElementById("loginForm");
+        }
+         
+        if (f) 
+        {
+          if (f.ident.value == null || f.ident.value == "") 
+          { 
+            f.ident.focus();
+          } 
+          else 
+          {
+            f.mdp.focus();
+          } 
+        }
+      }
+       
+    </script>
+</head>
+<body onload="loginformSetFocus()" ><div class="body""><table cellpadding="0" cellspacing="0" class="titreBox"><tr><td><table class="titre" style="background-image: url(/consultation/images/banner_heig-vd.svg);"><tr><td>GAPS</td><td>&nbsp;</td></tr></table></td></tr></table></div><br /><table id="news_root" align="center" class="box" style="width: 600px" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+              <td class="titreBox" style="width: 100%; border-bottom : 1px solid black; text-align : left">
+                  Annonces
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div id="news"><table id="tab_news" style="width: 100%" cellspacing="0" cellpadding="0" border="0"></table><div style="display: none" id="nb_news">0</div></div>
+              </td>
+            </tr>
+        </table>
+      <script type="text/javascript">
+      function checkVisible() {
+        if (true && document.getElementById("nb_news").innerHTML == '0') 
+          document.getElementById("news_root").style.display = "none";
+      }
+        
+        function formaterNews()
+        {
+          checkVisible();
+          if (document.getElementById('tab_news').offsetHeight > 300)
+          {
+            document.getElementById('news').style.height = 300+"px";
+            document.getElementById('news').style.overflow = "auto";
+
+            if(document.all)
+            {
+              document.getElementById('news').style.overflowY = "scroll";
+              document.getElementById('news').style.overflowX = "hidden";
+              document.getElementById('news').style.padding = "0px 15px 0px 0px";
+            }
+
+          }
+          else 
+          {
+            document.getElementById('news').style.height = document.getElementById('tab_news').offsetHeight+"px";
+            if(document.all)
+            {
+              document.getElementById('news').style.overflowY = "hidden";
+              document.getElementById('news').style.overflowX = "hidden";
+              document.getElementById('news').style.padding = "0px 0px 0px 0px"; 
+            }
+          }
+        }</script>
+      <script>formaterNews();</script>
+    <div class="corps" style="background-color: inherit;">
+      <table align="center" style="margin-top : 10px" border="0">
+        <tr>
+          <td>
+            <table class="box" align="center" cellpadding="0" cellspacing="0" style="width: 600px">
+              <tr><td class="titreBox">Bienvenue</td></tr>
+              <tr>
+                <td style="padding: 3px;">
+                  <p style="padding: 3px; margin: 0;">Pour accéder aux différentes interfaces GAPS, il suffit de vous identifier ci-dessous avec votre compte Switch edu-ID :</p>
+                  <p style="padding: 3px; margin: 0;">
+                    <center>
+                      <script type="text/javascript" src="https://wayf.switch.ch/SWITCHaai/WAYF/embedded-wayf.js"></script>
+                    </center>
+                  </p>
+                  <p style="padding: 3px; margin: 0;"><a href="https://eduid.ch/web/reset-password/" target="_blank">Mot de passe edu-ID oublié?</a></p>
+                  <p style="padding: 3px; margin: 0;">En cas de problème lors de l'identification, veuillez contacter le Helpdesk de votre institution.</p>
+                  <br />
+                  <br />
+                      
+                  <hr style="border-style: solid; border-width: 1px; border-color: lightgrey;"/>
+                  <p style="padding: 3px;padding-top: 0; margin: 0; font-size: 12pt;">Accès école <span style="font-size: 13px;color: gray;">(En cas de problèmes avec Switch edu-ID, compte local, utilisateur externe à la HES-SO ou chargés de cours)</span></p>
+                  
+                  <form id="localaccessform" method="post" class="login" >
+                    <table border="0" align="center">
+                      <tr>
+                        <td colspan="2" class="nouveauLogin"></td>
+                      </tr>
+                      <tr>
+                        <td style="font-size: 8pt; text-align: right; width: 40%">Identifiant:<br /><span style="font-size: 8pt">(exemple: john.doe)</span></td>
+                        <td><input id="ident" name="login" type="text" value="" maxlength="128" /></td>
+                      </tr>
+                      <tr>
+                        <td style="font-size: 8pt; text-align: right; width: 35%">Mot de passe:</td><td><input id="mdp" name="password" type="password" maxlength="128" /></td>
+                      </tr>
+                      <tr>
+                        <td colspan="2" style="text-align: center">
+                          <input class="bouton" style="padding-left: 7px; padding-top: 3px; padding-right: 7px; padding-bottom: 3px; margin-top: 5px; margin-bottom: 5px" type="submit" value="Entrer" name="submit" />
+                        </td>
+                      </tr>
+                    </table>
+                    <p style="padding: 3px; margin: 0;">
+                      <a href="https://aai-service.hes-so.ch/pwm/public/forgottenpassword" target="_blank">Mot de passe HES-SO oublié ?</a>
+                      &nbsp;|&nbsp;
+                      <a href="https://gaps.heig-vd.ch/public/recover.php" target="_blank">Mot de passe local oublié ?</a></p>
+                  </form>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        
+        <tr>
+          <td align="center">
+            <br /><br />
+
+            <table style="margin: auto; border: 1px solid #000; background-color: #DDF">
+              <tr>
+                <td style="text-align: center;padding:3px;">
+                  En cas de problème <strong>technique</strong>, veuillez contacter l'équipe GAPS (gaps AT heig-vd POINT ch)
+                </td>
+              </tr>
+            </table>
+  
+          </td>
+        </tr>
+      </table>
+  
+    </div></body></html>
