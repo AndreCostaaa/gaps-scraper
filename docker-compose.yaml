@@ -6,3 +6,5 @@ services:
     container_name: gaps-scraper
     volumes:
       - ./data:/app/data
+    env_file:
+      - .env
