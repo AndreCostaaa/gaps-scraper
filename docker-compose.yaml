@@ -2,7 +2,9 @@ services:
   gaps-scraper:
     restart: always
     build: .
-    image: gaps-scraper
+    image: ghrc.io/andrecostaaa/gaps-scraper
     container_name: gaps-scraper
     volumes:
       - ./data:/app/data
+    env_file:
+      - .env

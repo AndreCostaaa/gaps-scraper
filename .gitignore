@@ -2,5 +2,5 @@
 /env
 *auth.json
 *pycache*
+/data
 .env
-data
