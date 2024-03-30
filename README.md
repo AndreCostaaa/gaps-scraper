@@ -60,23 +60,25 @@ EMAIL_TOKEN= <application token>
 
 1. Clone this repository
 
-`git clone https://github.com/AndreCostaaa/gaps-scraper.git`
+```shell
+git clone https://github.com/AndreCostaaa/gaps-scraper.git
+```
 
 2. Modify the [skeleton.env](./skeleton.env) file with the necessary information
 
-```
+```shell
 nano/vi skeleton.env
 ```
 
 3. Rename the file to .env
 
-```
+```shell
 mv skeleton.env .env
 ```
 
 4. Run
 
-```
+```shell
 docker compose up -d
 ```
 
@@ -84,7 +86,7 @@ docker compose up -d
 
 You can also build the image with the following command
 
-```
+```shell
 docker compose up -d --build
 ```
 
