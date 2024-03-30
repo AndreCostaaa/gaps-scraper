@@ -78,7 +78,15 @@ nano/vi skeleton.env
 mv skeleton.env .env
 ```
 
-Build and run
+4. Run
+
+```
+docker compose up -d
+```
+
+-- Optional --
+
+You can also build the image with the following command
 
 ```
 docker compose up -d --build
