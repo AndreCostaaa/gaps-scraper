@@ -4,7 +4,7 @@ import os
 from app_types.grades import Grade
 
 
-GRADES_FILE_PATH = os.path.join(os.getcwd(), r"data/grades.json")
+GRADES_FILE_PATH = "/app/data/grades.json"
 
 
 def read_json_file(file_path: str) -> dict:
