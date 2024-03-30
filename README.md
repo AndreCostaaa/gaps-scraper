@@ -12,7 +12,7 @@ Docker
 
 Install all requirements
 
-```
+```shell
 python -m venv env
 source env/bin/activate
 pip install -r requirements.txt
@@ -30,7 +30,7 @@ Inside the docker container, the script will be launched every 5 minutes and sen
 
 Env variables are used to configure the program
 
-```
+```env
 GAPS_USERNAME=<gaps username without @heig-vd.ch>
 GAPS_PASSWORD=<gaps password>
 
