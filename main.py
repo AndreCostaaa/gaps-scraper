@@ -14,9 +14,8 @@ def main():
 
     session_id, student_id = login(username, password)
     if not student_id:
-        print("Login failed")
+        print("Failed to login")
         return
-    print(f"Student ID: {student_id}")
 
     grades, modules = fetch_grades(session_id, student_id, get_current_school_year())
 
