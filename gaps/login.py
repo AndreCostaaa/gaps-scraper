@@ -8,7 +8,7 @@ def login(username, password) -> str | None:
     data = {"login": username, "password": password, "submit": "Entrer"}
 
     req = requests.post(
-        url("consultation"),
+        url("consultation/index.php"),
         data=data,
         headers={
             "User-Agent": "Mozilla/5.0 (Linux x86_64)",
@@ -16,8 +16,6 @@ def login(username, password) -> str | None:
             "Content-Type": "application/x-www-form-urlencoded",
         },
     )
-    if "Connexion échouée" in req.text:
-        return None, None
 
     session_id = req.cookies.get_dict().get("GAPSSESSID")
     student_id = get_student_id(session_id)

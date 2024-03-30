@@ -6,18 +6,27 @@ def url(endpoint: str) -> str:
 
 
 def fetch_html(
-    endpoint: str, session_id: str, params: dict = None, data: dict = None
+    endpoint: str,
+    session_id: str,
+    params: dict = None,
+    data: dict = None,
+    is_post: bool = False,
 ) -> str:
-
-    req = requests.get(
-        url(endpoint),
-        headers={
-            "User-Agent": "Mozilla/5.0 (Linux x86_64)",
-            "Accept": "*/*",
-        },
-        cookies={"GAPSSESSID": session_id},
-        #    data=data,
-        #    params=params,
-    )
-
+    full_url = url(endpoint)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Linux x86_64)",
+        "Accept": "*/*",
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+    cookies = {"GAPSSESSID": session_id}
+    data = data
+    params = params
+    if is_post:
+        req = requests.post(
+            full_url, headers=headers, cookies=cookies, data=data, params=params
+        )
+    else:
+        req = requests.get(
+            full_url, headers=headers, cookies=cookies, data=data, params=params
+        )
     return req.text
