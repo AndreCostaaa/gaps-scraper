@@ -45,10 +45,6 @@ EMAIL_ADDRESS=<smtp login email>
 EMAIL_TOKEN=<smtp login token>
 ```
 
-Two configurations files are needed
-
-auth.json : Contains Gaps username and password
-
 ### SMTP Configuration example
 
 Here's an example using a gmail account
