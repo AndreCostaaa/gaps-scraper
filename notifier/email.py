@@ -10,10 +10,20 @@ from app_types.grades import Grade
 
 @dataclass
 class SmtpConfig:
-    email_address: str = os.environ.get("EMAIL_ADDRESS")
-    email_token: str = os.environ.get("EMAIL_TOKEN")
-    smtp_server: str = os.environ.get("SMTP_SERVER")
-    smtp_server_port: int = os.environ.get("SMTP_SERVER_PORT")
+    email_address: str | None = os.environ.get("EMAIL_ADDRESS", None)
+    email_token: str | None = os.environ.get("EMAIL_TOKEN", None)
+    smtp_server: str | None = os.environ.get("SMTP_SERVER", None)
+    smtp_server_port: int | None = os.environ.get("SMTP_SERVER_PORT", None)
+
+    def is_valid(self):
+        return all(
+            [
+                self.email_address,
+                self.email_token,
+                self.smtp_server,
+                self.smtp_server_port,
+            ]
+        )
 
 
 SMTP_CONFIG_DATA = SmtpConfig()
@@ -68,9 +78,11 @@ def get_destination_email() -> str:
 
 
 def send_email_notification(grades: list[Grade], modules: list[Module]) -> None:
-    smtp_data = get_smtp_auth_data()
-    to = get_destination_email()
-    subject = build_subject(grades)
     message = build_email_message(grades, modules)
     print(message)
+    smtp_data = get_smtp_auth_data()
+    if not smtp_data.is_valid():
+        return
+    to = get_destination_email()
+    subject = build_subject(grades)
     __send(smtp_data, to, subject, message)
