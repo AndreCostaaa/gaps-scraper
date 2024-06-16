@@ -33,7 +33,7 @@ def main():
             grade.grade,
             grade.name,
             grade.class_average,
-            class_identifiers[grade.course],
+            class_identifiers.get(grade.course, 'X'),
         )
         for grade in grades
         if grade not in old_grades

@@ -1,14 +1,12 @@
 from bs4 import BeautifulSoup
 
-from app_types.schedule import ModuleClass
-
 
 def parse_schedule(html: str) -> dict[str, str]:  # eg {"PDL":"A", "MATH":"B"}
 
     soup = BeautifulSoup(html, "html.parser")
     teaching_cols = soup.findAll("a", {"class": "teaching"})
     if not teaching_cols:
-        return []
+        return {}
 
     modules = {}
     for col in teaching_cols:
