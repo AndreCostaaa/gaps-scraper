@@ -4,7 +4,7 @@ from gaps.gaps import url
 from gaps.student import get_student_id
 
 
-def login(username, password) -> str | None:
+def login(username, password) -> tuple [str | None, str]:
     data = {"login": username, "password": password, "submit": "Entrer"}
 
     req = requests.post(
