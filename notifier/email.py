@@ -13,7 +13,7 @@ class SmtpConfig:
     email_address: str | None = os.environ.get("EMAIL_ADDRESS", None)
     email_token: str | None = os.environ.get("EMAIL_TOKEN", None)
     smtp_server: str | None = os.environ.get("SMTP_SERVER", None)
-    smtp_server_port: int | None = os.environ.get("SMTP_SERVER_PORT", None)
+    smtp_server_port: int = int(os.environ.get("SMTP_PORT", 0))
 
     def is_valid(self):
         return all(
