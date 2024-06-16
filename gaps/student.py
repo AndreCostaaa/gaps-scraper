@@ -1,5 +1,4 @@
-import requests
-from gaps.gaps import fetch_html, url
+from gaps.gaps import fetch_html
 from parser.student import parse_student_id
 
 

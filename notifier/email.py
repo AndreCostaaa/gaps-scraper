@@ -1,4 +1,3 @@
-from ast import Module
 from email.message import EmailMessage
 import os
 import smtplib
@@ -6,6 +5,7 @@ import ssl
 from dataclasses import dataclass
 
 from app_types.grades import Grade
+from app_types.modules import Module
 
 
 @dataclass
@@ -28,11 +28,13 @@ class SmtpConfig:
 
 SMTP_CONFIG_DATA = SmtpConfig()
 
-TO = os.environ.get("NOTIFIER_EMAIL", os.environ.get("GAPS_USERNAME") + "@heig-vd.ch")
+TO = os.environ.get("NOTIFIER_EMAIL", os.environ.get("GAPS_USERNAME", "") + "@heig-vd.ch")
 
 
 def __send(smtp_data: SmtpConfig, to: str, subject: str, message_content: str):
 
+    if not smtp_data.is_valid():
+        return 
     message = EmailMessage()
 
     message["Subject"] = subject

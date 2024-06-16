@@ -28,7 +28,7 @@ class GapsNotifierHandler:
     def fetch_gaps_notifier_access_token(self) -> str:
         req = requests.post(self.build_url("token"), json={"user_id": self.user_id})
         if req.status_code != 200:
-            return None
+            return ""
         return req.json()["access_token"]
 
     def send_notification_to_gaps_notifier(self, grade: Grade) -> bool:

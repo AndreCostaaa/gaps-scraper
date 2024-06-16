@@ -9,6 +9,7 @@ class Grade:
     class_average: str
     class_identifier: str = "X"
 
+    @staticmethod
     def from_dict(data):
         return Grade(data["course"], data["grade"], data["name"], data["class_average"])
 

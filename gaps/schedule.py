@@ -1,5 +1,5 @@
 from gaps.gaps import fetch_html
-from parser.schedule import parse_schedule, ModuleClass
+from parser.schedule import parse_schedule
 
 
 def fetch_schedule(session_id: str| None) -> dict[str, str]:

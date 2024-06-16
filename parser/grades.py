@@ -1,14 +1,13 @@
-from dataclasses import dataclass
 from bs4 import BeautifulSoup
 from app_types.grades import Grade
 from app_types.modules import Module
 
 
-def parse_grades(html) -> list:
+def parse_grades(html) -> tuple[list[Grade], list[Module]]:
     soup = BeautifulSoup(html, "html.parser")
     table = soup.find("table", {"class": "displayArray"})
     if not table:
-        return []
+        return [], []
 
     rows = table.find_all("tr")
     grades = []

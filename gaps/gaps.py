@@ -8,8 +8,8 @@ def url(endpoint: str) -> str:
 def fetch_html(
     endpoint: str,
     session_id: str,
-    params: dict = None,
-    data: dict = None,
+    params: dict = {},
+    data: dict = {},
     is_post: bool = False,
 ) -> str:
     full_url = url(endpoint)
