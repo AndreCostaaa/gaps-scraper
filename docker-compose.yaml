@@ -2,7 +2,6 @@ services:
   gaps-scraper:
     restart: always
     build: .
-    image: ghcr.io/andrecostaaa/gaps-scraper
     container_name: gaps-scraper
     volumes:
       - ./data:/app/data
