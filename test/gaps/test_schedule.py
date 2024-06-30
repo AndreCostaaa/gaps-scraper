@@ -5,6 +5,7 @@ from gaps.login import login
 from gaps.schedule import fetch_classes, fetch_current_schedule
 
 
+@unittest.skip("This is not a unit test.")
 class TestScheduleFetching(unittest.TestCase):
 
     session_id: str
