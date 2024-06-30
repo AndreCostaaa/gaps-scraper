@@ -1,11 +1,12 @@
+import os
+
 from app_types.grades import Grade
 from gaps.grades import fetch_grades
 from gaps.login import login
-from gaps.schedule import fetch_schedule
-import os
+from gaps.schedule import fetch_classes
 from notifier.notifier import notify
-from utils.school_year import get_current_school_year
 from utils.file_io import read_grades, save_grades
+from utils.school_year import get_current_school_year
 
 
 def main():
@@ -25,7 +26,7 @@ def main():
         print("No new grades")
         return
 
-    class_identifiers = fetch_schedule(session_id)
+    class_identifiers = fetch_classes(session_id)
 
     new_grades: list[Grade] = [
         Grade(
