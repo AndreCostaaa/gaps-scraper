@@ -1,9 +1,10 @@
-from gaps.gaps import fetch_html
 from parser.schedule import parse_schedule
+
+from gaps.gaps import fetch_html
 from utils.school_year import get_current_school_year
 
 
-def fetch_schedule(session_id: str | None) -> dict[str, str]:
+def fetch_classes(session_id: str | None) -> dict[str, str]:
     if not session_id:
         return {}
 
