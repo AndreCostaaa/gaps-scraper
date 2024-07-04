@@ -4,6 +4,7 @@ import smtplib
 import ssl
 from dataclasses import dataclass
 
+from app_types.bulletin import Bulletin
 from app_types.grades import Grade
 from app_types.modules import Module
 
@@ -28,13 +29,15 @@ class SmtpConfig:
 
 SMTP_CONFIG_DATA = SmtpConfig()
 
-TO = os.environ.get("NOTIFIER_EMAIL", os.environ.get("GAPS_USERNAME", "") + "@heig-vd.ch")
+TO = os.environ.get(
+    "NOTIFIER_EMAIL", os.environ.get("GAPS_USERNAME", "") + "@heig-vd.ch"
+)
 
 
 def __send(smtp_data: SmtpConfig, to: str, subject: str, message_content: str):
 
     if not smtp_data.is_valid():
-        return 
+        return
     message = EmailMessage()
 
     message["Subject"] = subject
@@ -53,7 +56,6 @@ def __send(smtp_data: SmtpConfig, to: str, subject: str, message_content: str):
 
 
 def build_email_message(grades: list[Grade], modules: list[Module]) -> str:
-
     message = "New grades: \n"
     for grade in grades:
         message += (
@@ -68,6 +70,7 @@ def build_email_message(grades: list[Grade], modules: list[Module]) -> str:
 
 
 def get_smtp_auth_data() -> SmtpConfig:
+    print(SMTP_CONFIG_DATA)
     return SMTP_CONFIG_DATA
 
 
@@ -87,4 +90,15 @@ def send_email_notification(grades: list[Grade], modules: list[Module]) -> None:
         return
     to = get_destination_email()
     subject = build_subject(grades)
+    __send(smtp_data, to, subject, message)
+
+
+def send_bulletin_email(bulletin: Bulletin) -> None:
+    smtp_data = get_smtp_auth_data()
+    if not smtp_data.is_valid():
+        print("smtp data not valid")
+        return
+    to = get_destination_email()
+    subject = "Bulletin"
+    message = str(bulletin)
     __send(smtp_data, to, subject, message)
