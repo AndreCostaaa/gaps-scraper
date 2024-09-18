@@ -70,7 +70,6 @@ def build_email_message(grades: list[Grade], modules: list[Module]) -> str:
 
 
 def get_smtp_auth_data() -> SmtpConfig:
-    print(SMTP_CONFIG_DATA)
     return SMTP_CONFIG_DATA
 
 
