@@ -8,6 +8,8 @@ from notifier.api_notification import send_api_notification
 class GapsNotifierHandler:
     def __init__(self):
         self.url = os.environ.get("GAPS_NOTIFIER_URL", "")
+        if not self.url:
+            return
         if self.url[-1] == "/":
             self.url = self.url[:-1]
         self.user_id = None
@@ -32,7 +34,7 @@ class GapsNotifierHandler:
         return req.json()["access_token"]
 
     def send_notification_to_gaps_notifier(self, grade: Grade) -> bool:
-        if not self.access_token or not self.url:
+        if not self.url or not self.access_token:
             return False
 
         data = grade.to_dict()
