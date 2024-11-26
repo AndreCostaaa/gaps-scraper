@@ -3,6 +3,7 @@ from notifier.gaps_notifier import GapsNotifierHandler
 from app_types.grades import Grade
 
 from app_types.modules import Module
+from utils.school_year import trimester_name
 
 gaps_notifier = GapsNotifierHandler()
 
@@ -34,3 +35,12 @@ def build_grades_email_message(grades: list[Grade], modules: list[Module]) -> st
         message += f"{module.name} - {module.average}\n"
 
     return message
+
+
+def notify_new_schedule(school_year: int, trimester: int):
+
+    email_subject = "New Schedule Available"
+    email_message = (
+        f"Schedule for {school_year} - {trimester_name(trimester)} is now available\n"
+    )
+    send_email_message(email_subject, email_message)
