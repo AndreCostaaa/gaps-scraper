@@ -5,9 +5,12 @@ import os
 from app_types.bulletin import Bulletin
 from app_types.grades import Grade
 
-
 GRADES_FILE_PATH = "/app/data/grades.json"
 PROVISIONAL_BULLETIN_PATH = "./data/prov_bulletin.json"
+
+
+def get_schedule_data_path(school_year: int, trimester: int):
+    return f"/app/data/{school_year}-{trimester}.dat"
 
 
 def read_json_file(file_path: str) -> dict:
