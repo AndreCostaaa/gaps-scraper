@@ -55,40 +55,19 @@ def __send(smtp_data: SmtpConfig, to: str, subject: str, message_content: str):
         server.send_message(message)
 
 
-def build_email_message(grades: list[Grade], modules: list[Module]) -> str:
-    message = "New grades: \n"
-    for grade in grades:
-        message += (
-            f"{grade.course} - {grade.name} - {grade.grade} ({grade.class_average})\n"
-        )
-
-    message += "\n\nModules:\n"
-    for module in modules:
-        message += f"{module.name} - {module.average}\n"
-
-    return message
-
-
 def get_smtp_auth_data() -> SmtpConfig:
     return SMTP_CONFIG_DATA
-
-
-def build_subject(grades: list[Grade]) -> str:
-    return "New grade" + ("s" if len(grades) > 1 else "")
 
 
 def get_destination_email() -> str:
     return TO
 
 
-def send_email_notification(grades: list[Grade], modules: list[Module]) -> None:
-    message = build_email_message(grades, modules)
-    print(message)
+def send_email_message(subject: str, message: str) -> None:
     smtp_data = get_smtp_auth_data()
     if not smtp_data.is_valid():
         return
     to = get_destination_email()
-    subject = build_subject(grades)
     __send(smtp_data, to, subject, message)
 
 
