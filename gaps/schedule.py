@@ -16,3 +16,11 @@ def fetch_schedule(session_id: str | None) -> dict[str, str]:
         result.update(parse_schedule(html))
 
     return result
+
+
+def is_schedule_available(session_id: str, year: int, tri: int) -> bool:
+    html = fetch_html(
+        f"consultation/horaires/?annee={year}&trimestre={tri}",
+        session_id,
+    )
+    return "mainSchedule" in html
