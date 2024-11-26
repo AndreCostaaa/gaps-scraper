@@ -33,7 +33,7 @@ class GapsNotifierHandler:
             return ""
         return req.json()["access_token"]
 
-    def send_notification_to_gaps_notifier(self, grade: Grade) -> bool:
+    def send_grade(self, grade: Grade) -> bool:
         if not self.url or not self.access_token:
             return False
 

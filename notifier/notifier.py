@@ -12,4 +12,4 @@ def notify(grades: list[Grade], modules: list[Module]):
         return
     send_email_notification(grades, modules)
     for grade in grades:
-        gaps_notifier.send_notification_to_gaps_notifier(grade)
+        gaps_notifier.send_grade(grade)
