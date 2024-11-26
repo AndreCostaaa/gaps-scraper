@@ -3,7 +3,7 @@ from gaps.grades import fetch_grades
 from gaps.login import login
 from gaps.schedule import fetch_schedule
 import os
-from notifier.notifier import notify
+from notifier.notifier import notify_grades
 from utils.school_year import get_current_school_year
 from utils.file_io import read_grades, save_grades
 
@@ -39,7 +39,7 @@ def main():
         if grade not in old_grades
     ]
 
-    notify(new_grades, modules)
+    notify_grades(new_grades, modules)
     save_grades(grades)
 
 

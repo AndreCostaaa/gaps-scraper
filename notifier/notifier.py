@@ -7,7 +7,7 @@ from app_types.modules import Module
 gaps_notifier = GapsNotifierHandler()
 
 
-def notify(grades: list[Grade], modules: list[Module]):
+def notify_grades(grades: list[Grade], modules: list[Module]):
     if not grades:
         return
     email_subject = build_grades_email_subject(grades)
